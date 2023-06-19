@@ -1,1 +1,1 @@
-# PhotonPlayfabStudy
+# PhotonとPlayfabの勉強をするためのリポジトリです
