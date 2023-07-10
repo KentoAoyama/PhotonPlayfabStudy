@@ -4,7 +4,7 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 
-public class PlayfabManager : MonoBehaviour
+public class PlayfabLoginExample : MonoBehaviour
 {
     void Start()
     {
