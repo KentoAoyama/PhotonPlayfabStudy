@@ -74,7 +74,6 @@ crashlytics-build.properties
 Assets/Photon/
 Assets/PlayFabEditorExtensions/
 Assets/PlayFabSDK/
-Assets/Photon.meta
-Assets/PlayFabAuthenticator.cs.meta
-Assets/PlayFabEditorExtensions.meta
 Assets/Packages/
+Assets/Photon.meta
+Assets/PlayFabEditorExtensions.meta
