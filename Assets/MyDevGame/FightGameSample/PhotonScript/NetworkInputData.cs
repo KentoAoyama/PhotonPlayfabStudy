@@ -3,5 +3,7 @@ using UnityEngine;
 
 public struct NetworkInputData : INetworkInput
 {
-    public bool isCheck;
+    public const byte SPACEBUTTON1 = 0x01;
+
+    public byte buttons;
 }

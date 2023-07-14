@@ -1,40 +1,24 @@
 using Fusion.Sockets;
 using Fusion;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.AddressableAssets;
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [SerializeField] 
-    private AssetReference _playerAsset;
-
+    [SerializeField]
     private NetworkPrefabRef _playerPrefab;
 
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new();
 
     private NetworkRunner _runner;
 
-    async void StartGame(GameMode mode)
+    private bool _spaceButton;
+
+    private void Update()
     {
-        var prefab = _playerAsset.LoadAssetAsync<GameObject>();
-
-
-        // Create the Fusion runner and let it know that we will be providing user input
-        _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.ProvideInput = true;
-
-        // Start or join (depends on gamemode) a session with a specific name
-        await _runner.StartGame(new StartGameArgs()
-        {
-            GameMode = mode,
-            SessionName = "TestRoom",
-            Scene = SceneManager.GetActiveScene().buildIndex,
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
-        });
+        _spaceButton |= Input.GetKeyDown(KeyCode.Space);
     }
 
     private void OnGUI()
@@ -52,12 +36,28 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    async void StartGame(GameMode mode)
+    {
+        // Create the Fusion runner and let it know that we will be providing user input
+        _runner = gameObject.AddComponent<NetworkRunner>();
+        _runner.ProvideInput = true;
+
+        // Start or join (depends on gamemode) a session with a specific name
+        await _runner.StartGame(new StartGameArgs()
+        {
+            GameMode = mode,
+            SessionName = "TestRoom",
+            Scene = SceneManager.GetActiveScene().buildIndex,
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+        });
+    }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
         {
             // Create a unique position for the player
-            Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
+            Vector3 spawnPosition = new ((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
             // Keep track of the player avatars so we can remove it when they disconnect
             _spawnedCharacters.Add(player, networkPlayerObject);
@@ -88,9 +88,11 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnSceneLoadStart(NetworkRunner runner) { }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        var data = new NetworkInputData();
+        NetworkInputData data = new() { };
 
-        data.isCheck = Input.GetKey(KeyCode.Space);
+        if (_spaceButton)
+            data.buttons |= NetworkInputData.SPACEBUTTON1;
+        _spaceButton = false;
 
         input.Set(data);
     }

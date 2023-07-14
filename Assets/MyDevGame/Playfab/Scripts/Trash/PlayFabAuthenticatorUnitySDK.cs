@@ -5,7 +5,7 @@
 //using System.Collections.Generic;
 //using UnityEngine;
 
-//public class PlayFabAuthenticator : MonoBehaviour
+//public class PlayFabAuthenticatorUnitySDK : MonoBehaviour
 //{
 
 //    private string _playFabPlayerIdCache;
