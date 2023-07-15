@@ -7,7 +7,7 @@ public class PlayerTest : NetworkBehaviour
 
     private void Start()
     {
-        _lagCheck = FindFirstObjectByType<LagChecker>().GetComponent<LagChecker>();
+        
     }
 
     public override void FixedUpdateNetwork()
@@ -16,7 +16,12 @@ public class PlayerTest : NetworkBehaviour
         {
             if ((data.buttons & NetworkInputData.SPACEBUTTON1) != 0)
             {
-                Debug.Log("ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚æ");
+                if (_lagCheck == null)
+                {
+                    _lagCheck = FindFirstObjectByType<LagChecker>().GetComponent<LagChecker>();
+                }
+
+                _lagCheck.SendTime();
             }
         }
     }

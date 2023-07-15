@@ -10,6 +10,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField]
     private NetworkPrefabRef _playerPrefab;
 
+    [SerializeField]
+    private NetworkPrefabRef _lagChecker;
+
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new();
 
     private NetworkRunner _runner;
@@ -56,6 +59,8 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (runner.IsServer)
         {
+            NetworkObject networkLagChecker = runner.Spawn(_lagChecker);
+
             // Create a unique position for the player
             Vector3 spawnPosition = new ((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
