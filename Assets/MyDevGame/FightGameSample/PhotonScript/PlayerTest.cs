@@ -1,14 +1,16 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerTest : NetworkBehaviour
 {
+    [SerializeField]
+    private Text _text;
+
     private LagChecker _lagCheck;
 
-    private void Start()
-    {
-        
-    }
+    [Networked] 
+    private TickTimer _delay { get; set; }
 
     public override void FixedUpdateNetwork()
     {
@@ -22,7 +24,17 @@ public class PlayerTest : NetworkBehaviour
                 }
 
                 _lagCheck.SendTime();
+                _delay = TickTimer.CreateFromSeconds(Runner, 0.5f);
             }
+        }
+
+        if (_delay.ExpiredOrNotRunning(Runner))
+        {
+            _text.text = "delay‚È‚µ";
+        }
+        else
+        {
+            _text.text = "delay’†";
         }
     }
 }
